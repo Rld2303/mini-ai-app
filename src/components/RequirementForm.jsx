@@ -70,7 +70,7 @@ export default function RequirementForm({ onExtract }) {
       // NOTE: This fetch call requires a running backend server.
       // If you do not have a backend, you can uncomment the setTimeout below
       // and use the mockExtract function instead.
-      const res = await fetch("http://localhost:5000/api/extract", {
+      const res = await fetch("https://mini-ai-app.onrender.com/api/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ description: text })
