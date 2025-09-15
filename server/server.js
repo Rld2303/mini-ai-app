@@ -1,19 +1,36 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config();
-console.log("MONGO_URI value:", process.env.MONGO_URI); 
+console.log("MONGO_URI value:", process.env.MONGO_URI);
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB connected"))
+.catch(err => console.error("❌ Mongo error:", err));
+
+// Schema & Model
+const RequirementSchema = new mongoose.Schema({
+  description: String,
+  result: Object,
+  createdAt: { type: Date, default: Date.now }
+});
+const Requirement = mongoose.model("Requirement", RequirementSchema);
+
 // POST route to capture requirements
 app.post("/api/extract", async (req, res) => {
   const { description } = req.body;
-  const apiKey = process.env.API_KEY || ""; // Your API key will be automatically provided by the platform
+  const apiKey = process.env.API_KEY || "";
 
-  // We are using a modern AI model that is guaranteed to return JSON.
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
   const payload = {
@@ -40,18 +57,9 @@ Properties:
         type: "OBJECT",
         properties: {
           AppName: { type: "STRING" },
-          Entities: {
-            type: "ARRAY",
-            items: { type: "STRING" },
-          },
-          Roles: {
-            type: "ARRAY",
-            items: { type: "STRING" },
-          },
-          Features: {
-            type: "ARRAY",
-            items: { type: "STRING" },
-          },
+          Entities: { type: "ARRAY", items: { type: "STRING" } },
+          Roles: { type: "ARRAY", items: { type: "STRING" } },
+          Features: { type: "ARRAY", items: { type: "STRING" } },
         },
       },
     },
@@ -76,7 +84,17 @@ Properties:
     if (parsed) {
       try {
         const jsonResult = JSON.parse(parsed);
+
+        // ✅ Save to MongoDB
+        const entry = new Requirement({
+          description,
+          result: jsonResult,
+        });
+        await entry.save();
+
+        // Send back to frontend
         return res.json(jsonResult);
+
       } catch (parseError) {
         console.error("Failed to parse JSON from AI response:", parseError);
         return res.status(500).json({ error: "AI response was not valid JSON" });
