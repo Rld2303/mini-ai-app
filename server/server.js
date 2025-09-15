@@ -108,6 +108,17 @@ Properties:
     console.error("Request failed:", err);
     res.status(500).json({ error: "AI extraction failed" });
   }
+  app.get("/api/history", async (req, res) => {
+  try {
+    const items = await Requirement.find()
+      .sort({ createdAt: -1 })
+      .limit(5);
+    res.json(items);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch history" });
+  }
+});
 });
 
 const PORT = process.env.PORT || 5000;
