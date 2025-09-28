@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 const RENDER_BACKEND_URL = "https://mini-ai-app-backend.onrender.com"; // Example URL
 
 // Toggle this variable to switch between live data and mock data
-const USE_MOCK_DATA = true; // Set to 'false' to use the live API after deployment
+const USE_MOCK_DATA = false; // Set to 'false' to use the live API after deployment
 
 const mockHistoryData = [
   // ... (Your mock data remains here)

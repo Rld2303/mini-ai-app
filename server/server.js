@@ -27,7 +27,7 @@ const RequirementSchema = new mongoose.Schema({
 const Requirement = mongoose.model("Requirement", RequirementSchema);
 
 // POST route to capture requirements
-app.post("/api/extract", async (req, res) => {
+app.post("/api/requirements", async (req, res) => {
   const { description } = req.body;
   const apiKey = process.env.API_KEY || "";
 

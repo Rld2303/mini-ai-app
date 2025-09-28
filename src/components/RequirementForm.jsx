@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { FiZap } from 'react-icons/fi';
 
+// 🚨🚨 IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR LIVE RENDER BACKEND URL 🚨🚨
+// Example: https://mini-ai-app-backend.onrender.com
+const RENDER_BACKEND_URL = "https://mini-ai-app.onrender.com"; 
 
 const capitalize = s => s[0].toUpperCase() + s.slice(1);
 
@@ -8,64 +11,45 @@ export default function RequirementForm({ onExtract }) {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // This is a simple mock extractor for demonstration purposes.
-  function mockExtract(input) {
-    const lower = input.toLowerCase();
-    let appName = 'My App';
-    const called = input.match(/called\s+([A-Za-z0-9\s]+)/i);
-    if (called) appName = called[1].split(/[.,]/)[0].trim();
-    else {
-      const m = input.match(/app (?:to|for)\s+([A-Za-z\s]+)/i);
-      if (m) appName = m[1].split(/[.,]/)[0].trim().split(' ').slice(0, 3).map(capitalize).join(' ') + ' App';
-    }
-
-    const tokens = (input.match(/\b[a-zA-Z]+\b/g) || []).map(t => t.toLowerCase());
-    const entityCandidates = new Set();
-    tokens.forEach(t => {
-      if (t.length > 3 && t.endsWith('s')) entityCandidates.add(capitalize(t.replace(/s$/, '')));
-    });
-    ['student', 'course', 'grade', 'user', 'order', 'product', 'ticket', 'event', 'post', 'comment'].forEach(w => {
-      if (lower.includes(w)) entityCandidates.add(capitalize(w));
-    });
-
-    const entities = Array.from(entityCandidates).slice(0, 6);
-    if (entities.length === 0) entities.push('Item');
-
-    const roles = [];
-    ['teacher', 'student', 'admin', 'manager', 'user', 'customer', 'guest'].forEach(r => {
-      if (lower.includes(r)) roles.push(capitalize(r));
-    });
-    if (roles.length === 0) roles.push('User');
-
-    const verbs = ['add', 'create', 'enrol', 'enroll', 'manage', 'view', 'edit', 'delete', 'search', 'report', 'login', 'signup', 'upload'];
-    const features = new Set();
-    verbs.forEach(v => {
-      if (lower.includes(v)) {
-        if (['enrol', 'enroll'].includes(v)) features.add('Enrol students');
-        else features.add(capitalize(v) + '...');
-      }
-    });
-    if (features.size === 0) features.add('Basic CRUD');
-
-    return {
-      AppName: appName,
-      Entities: entities,
-      Roles: roles,
-      Features: Array.from(features)
-    };
-  }
+  // NOTE: The mockExtract function has been removed to switch to the live API.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
     setLoading(true);
 
-    // Use a small delay to simulate the server response time.
-    setTimeout(() => {
-      const data = mockExtract(text);
-      onExtract(data);
-      setLoading(false);
-    }, 1000); // 1-second delay
+    try {
+        // 1. Fetch Request to the Live Render Backend API
+        const response = await fetch(`${RENDER_BACKEND_URL}/api/requirements`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            // Send the user's description to the backend for AI processing
+            body: JSON.stringify({ description: text.trim() }),
+        });
+
+        if (!response.ok) {
+            // Throw an error if the server response is not successful (e.g., 404, 500)
+            throw new Error(`HTTP error! Status: ${response.status}. Check your Render logs.`);
+        }
+
+        const data = await response.json();
+        
+        // 2. Pass the extracted requirements (AppName, Entities, Roles, Features) to the parent component
+        // Assuming your backend sends the structured data under a 'result' key
+        onExtract(data.result); 
+
+        // 3. Clear the input field after successful generation
+        setText(''); 
+        
+    } catch (error) {
+        console.error("API call failed:", error);
+        // Show an alert to the user if the network request fails
+        alert("Error generating requirements. Please ensure your backend is live on Render.");
+    } finally {
+        setLoading(false);
+    }
   };
 
   return (
