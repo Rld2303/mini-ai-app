@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-// Add mock data here for a guaranteed, stable demo
+// *** PLACEHOLDER: REPLACE WITH YOUR LIVE RENDER BACKEND URL ***
+const RENDER_BACKEND_URL = "https://mini-ai-app-backend.onrender.com"; // Example URL
+
+// Toggle this variable to switch between live data and mock data
+const USE_MOCK_DATA = true; // Set to 'false' to use the live API after deployment
+
 const mockHistoryData = [
+  // ... (Your mock data remains here)
   {
     _id: '1',
     description: 'CRM for small business to manage clients, sales, and appointments.',
@@ -21,23 +27,23 @@ export default function History() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // --- MOCK DATA IMPLEMENTATION ---
-    // Remove the fetch call and use a setTimeout to simulate API delay
-    const timer = setTimeout(() => {
-        setItems(mockHistoryData);
-        setLoading(false);
-    }, 500); // 0.5-second delay to simulate network latency
+    if (USE_MOCK_DATA) {
+        // --- MOCK DATA IMPLEMENTATION ---
+        const timer = setTimeout(() => {
+            setItems(mockHistoryData);
+            setLoading(false);
+        }, 500); 
 
-    return () => clearTimeout(timer); // Cleanup timer on unmount
-    // --- END MOCK IMPLEMENTATION ---
-
-    // Original code removed:
-    // fetch("http://localhost:5000/api/history")
-    //   .then(res => res.json())
-    //   .then(data => setItems(data))
-    //   .catch(err => console.error("History fetch error:", err));
+        return () => clearTimeout(timer);
+    } else {
+        // --- LIVE API IMPLEMENTATION (will run after you set USE_MOCK_DATA to false) ---
+        fetch(`${RENDER_BACKEND_URL}/api/history`)
+          .then(res => res.json())
+          .then(data => setItems(data))
+          .catch(err => console.error("History fetch error:", err))
+          .finally(() => setLoading(false));
+    }
   }, []);
-
   if (loading) {
       return (
           <section className="bg-white shadow-xl rounded-2xl p-6 flex justify-center items-center h-24 mt-4">
