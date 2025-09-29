@@ -59,7 +59,8 @@ export default function History() {
   // Use a modern, styled card for the history section
   return (
     <section className="bg-white shadow-xl rounded-2xl p-8 mt-8">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Recent Generations (Demo Data)</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Recent Generations</h2>
+
       
       {items.length === 0 ? (
         <p className="text-gray-500">No history found.</p>
