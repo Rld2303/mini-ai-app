@@ -82,11 +82,14 @@ Properties:
     const parsed = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (parsed) {
-      try {
-        const jsonResult = JSON.parse(parsed);
+     try {
+       // 🚨 FIX: Remove markdown fences (```json) and trim whitespace
+        const cleanJsonString = parsed.replace(/^```json|```$/g, '').trim(); 
+        
+        const jsonResult = JSON.parse(cleanJsonString);
 
-        // ✅ Save to MongoDB
-        const entry = new Requirement({
+        // ✅ Save to MongoDB (This line is now guaranteed to run if parsing succeeds)
+        const entry = new Requirement({
           description,
           result: jsonResult,
         });
