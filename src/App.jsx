@@ -5,9 +5,11 @@ import History from './components/History';
 
 export default function App() {
   const [reqs, setReqs] = useState(null);
-   const handleExtract = (data) => {
+  const [refreshHistory, setRefreshHistory] = useState(false);
+
+  const handleExtract = (data) => {
     setReqs(data);
-    setRefreshHistory((prev) => !prev); // toggle refresh
+    setRefreshHistory(prev => !prev); // toggle refresh so History refetches
   };
 
   return (
@@ -19,13 +21,10 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="max-w-6xl mx-auto p-6 space-y-8 mt-12">
-        <RequirementForm onExtract={setReqs} />
+        <RequirementForm onExtract={handleExtract} />
         {reqs && <GeneratedUI reqs={reqs} />}
-        <History />
+        <History refresh={refreshHistory} />
       </main>
-      <RequirementForm onExtract={handleExtract} />
-      <GeneratedUI reqs={reqs} />
-      <History refresh={refreshHistory} />
 
       {/* Footer */}
       <footer className="text-center text-gray-600 py-6 border-t mt-16 bg-gray-50/50">
