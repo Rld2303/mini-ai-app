@@ -24,7 +24,7 @@ const RequirementSchema = new mongoose.Schema({
   result: Object,
   createdAt: { type: Date, default: Date.now }
 });
-const Requirement = mongoose.model("Requirement", RequirementSchema);
+const Requirement = mongoose.model("Requirement", RequirementSchema, 'requirements' );
 
 // POST route to capture requirements
 app.post("/api/requirements", async (req, res) => {
