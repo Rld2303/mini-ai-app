@@ -40,8 +40,7 @@ export default function RequirementForm({ onExtract }) {
         // Assuming your backend sends the structured data under a 'result' key
         onExtract(data); 
 
-        // 3. Clear the input field after successful generation
-        setText(''); 
+        
         
     } catch (error) {
         console.error("API call failed:", error);

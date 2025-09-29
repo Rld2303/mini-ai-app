@@ -5,6 +5,10 @@ import History from './components/History';
 
 export default function App() {
   const [reqs, setReqs] = useState(null);
+   const handleExtract = (data) => {
+    setReqs(data);
+    setRefreshHistory((prev) => !prev); // toggle refresh
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 text-gray-900">
@@ -19,6 +23,9 @@ export default function App() {
         {reqs && <GeneratedUI reqs={reqs} />}
         <History />
       </main>
+      <RequirementForm onExtract={handleExtract} />
+      <GeneratedUI reqs={reqs} />
+      <History refresh={refreshHistory} />
 
       {/* Footer */}
       <footer className="text-center text-gray-600 py-6 border-t mt-16 bg-gray-50/50">

@@ -43,7 +43,7 @@ export default function History() {
           .catch(err => console.error("History fetch error:", err))
           .finally(() => setLoading(false));
     }
-  }, []);
+  }, [refresh]);
   if (loading) {
       return (
           <section className="bg-white shadow-xl rounded-2xl p-6 flex justify-center items-center h-24 mt-4">
