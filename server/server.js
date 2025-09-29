@@ -94,7 +94,7 @@ Properties:
         await entry.save();
 
         // Send back to frontend
-        return res.json(jsonResult);
+        return res.json(entry);
 
       } catch (parseError) {
         console.error("Failed to parse JSON from AI response:", parseError);
