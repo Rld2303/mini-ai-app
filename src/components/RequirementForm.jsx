@@ -38,7 +38,7 @@ export default function RequirementForm({ onExtract }) {
         
         // 2. Pass the extracted requirements (AppName, Entities, Roles, Features) to the parent component
         // Assuming your backend sends the structured data under a 'result' key
-        onExtract(data); 
+        onExtract(data.result); 
 
         
         
