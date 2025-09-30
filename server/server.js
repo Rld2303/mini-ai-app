@@ -81,12 +81,12 @@ Properties:
 
     if (parsed) {
      try {
-       // 🚨 FIX: Remove markdown fences (```json) and trim whitespace
+       
         const cleanJsonString = parsed.replace(/^```json|```$/g, '').trim(); 
         
         const jsonResult = JSON.parse(cleanJsonString);
 
-        // ✅ Save to MongoDB (This line is now guaranteed to run if parsing succeeds)
+        //  Save to MongoDB 
         const entry = new Requirement({
           description,
           result: jsonResult,

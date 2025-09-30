@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { FiZap } from 'react-icons/fi';
 
-// 🚨🚨 IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR LIVE RENDER BACKEND URL 🚨🚨
-// Example: https://mini-ai-app-backend.onrender.com
+
 const RENDER_BACKEND_URL = "https://mini-ai-app.onrender.com"; 
 
 const capitalize = s => s[0].toUpperCase() + s.slice(1);
@@ -11,8 +10,7 @@ export default function RequirementForm({ onExtract }) {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // NOTE: The mockExtract function has been removed to switch to the live API.
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
@@ -37,7 +35,7 @@ export default function RequirementForm({ onExtract }) {
         const data = await response.json();
         
         // 2. Pass the extracted requirements (AppName, Entities, Roles, Features) to the parent component
-        // Assuming your backend sends the structured data under a 'result' key
+        
         onExtract(data.result); 
 
         
